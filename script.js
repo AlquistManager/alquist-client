@@ -26,6 +26,7 @@ function start() {
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
+            setTimeout(start(),3000);
         }
     });
 }
