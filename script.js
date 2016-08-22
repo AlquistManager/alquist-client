@@ -1,58 +1,39 @@
-var session_id;
-var index_of_last_message = 0;
 var endpoint;
+var state = 'init';
+var context = {};
 
 //Function called right after the page is loaded
 $(document).ready(function () {
     //Get endpoint from URL address
     endpoint = getEndpoint();
-    //Call start method on Alquist to start new session
-    start();
-    //Get messages from Alquist immediately
-    getMessages();
-    //Set interval to get messages
-    setInterval(getMessages, 3000);
+
+    //Request response of init node
+    init();
 });
 
-//Start new session
-function start() {
+//Call init state
+function init() {
     $.ajax({
-        url: endpoint + 'start',
+        url: endpoint,
         type: 'post',
         processData: false,
+        data: JSON.stringify({text: '', state: state, context: context}),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+
         success: function (data, textStatus, jQxhr) {
-            //Save session id
-            session_id = data["session_id"];
+            // save state, context
+            state = data["state"];
+            context = data["context"];
+            //show Alquist's response
+            showSystemMessage(data["text"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
-            setTimeout(start(),3000);
+            //If Alquist doesn't response, wait and try it again
+            setTimeout(init(), 3000);
         }
     });
-}
-
-//Get messages from dialogue manager
-function getMessages() {
-    //Check if we have session_id already
-    if (session_id !== undefined) {
-        $.ajax({
-            url: endpoint + 'session',
-            dataType: 'json',
-            type: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify({"session_id": session_id}),
-            processData: false,
-            success: function (data, textStatus, jQxhr) {
-                //Shows messages from Alquist dialogue manager
-                showSystemMessages(index_of_last_message, data["session_history"]);
-                //Saves index of last message, to not show same message multiple times
-                index_of_last_message = data["session_history"].length;
-            },
-            error: function (jqXhr, textStatus, errorThrown) {
-                console.log(errorThrown);
-            }
-        });
-    }
 }
 
 //Click on submit button
@@ -64,11 +45,16 @@ $(document).on("submit", "#form", function (e) {
         url: endpoint,
         dataType: 'json',
         type: 'post',
-        contentType: 'application/json',
-        data: JSON.stringify({"session_id": session_id, "text": text}),
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({"text": text, "state": state, "context": context}),
         processData: false,
+
         success: function (data, textStatus, jQxhr) {
-            console.log(textStatus);
+            // save state, context
+            state = data["state"];
+            context = data["context"];
+            //show Alquist's response
+            showSystemMessage(data["text"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -80,23 +66,16 @@ $(document).on("submit", "#form", function (e) {
     showUserMessage(text);
 });
 
-//Shows messages of Alquist
-function showSystemMessages(index_of_last_message, message_array) {
-    //Go through all messages, which was not shown yet
-    for (var i = index_of_last_message; i < message_array.length; i++) {
-        //Take only messages from Alquist
-        if (message_array[i][0] == "System") {
-            //Show it on page
-            var well = $('<div class="well"><b>Alquist:</b> ' + message_array[i][1] + '</div>');
-            $("#communication_area").append(well.fadeIn("medium"));
-        }
-    }
+//Shows response of Alquist
+function showSystemMessage(text) {
+    var well = $('<div class="well"><b>Alquist:</b> ' + text + '</div>');
+    $("#communication_area").append(well.fadeIn("medium"));
 }
 
-//Shows messages of user
-function showUserMessage(message) {
+//Shows message of user
+function showUserMessage(text) {
     //Show it on page
-    var well = $('<div class="well"><b>User:</b> ' + message + '</div>');
+    var well = $('<div class="well"><b>User:</b> ' + text + '</div>');
     $("#communication_area").append(well);
 }
 
