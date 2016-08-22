@@ -1,6 +1,7 @@
 var endpoint;
 var state = 'init';
 var context = {};
+var session = "";
 
 //Function called right after the page is loaded
 $(document).ready(function () {
@@ -17,14 +18,15 @@ function init() {
         url: endpoint,
         type: 'post',
         processData: false,
-        data: JSON.stringify({text: '', state: state, context: context}),
+        data: JSON.stringify({"text": '', "state": state, "context": context, "session":session}),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
 
         success: function (data, textStatus, jQxhr) {
-            // save state, context
+            // save state, context and session
             state = data["state"];
             context = data["context"];
+            session = data["session"];
             //show Alquist's response
             showSystemMessage(data["text"]);
         },
@@ -46,13 +48,14 @@ $(document).on("submit", "#form", function (e) {
         dataType: 'json',
         type: 'post',
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify({"text": text, "state": state, "context": context}),
+        data: JSON.stringify({"text": text, "state": state, "context": context, "session":session}),
         processData: false,
 
         success: function (data, textStatus, jQxhr) {
-            // save state, context
+            // save state, context and session
             state = data["state"];
             context = data["context"];
+            session = data["session"];
             //show Alquist's response
             showSystemMessage(data["text"]);
         },
