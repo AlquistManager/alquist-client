@@ -18,7 +18,7 @@ function init() {
         url: endpoint,
         type: 'post',
         processData: false,
-        data: JSON.stringify({"text": '', "state": state, "context": context, "session":session}),
+        data: JSON.stringify({"text": '', "state": state, "context": context, "session": session}),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
 
@@ -48,7 +48,7 @@ $(document).on("submit", "#form", function (e) {
         dataType: 'json',
         type: 'post',
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify({"text": text, "state": state, "context": context, "session":session}),
+        data: JSON.stringify({"text": text, "state": state, "context": context, "session": session}),
         processData: false,
 
         success: function (data, textStatus, jQxhr) {
@@ -70,9 +70,11 @@ $(document).on("submit", "#form", function (e) {
 });
 
 //Shows response of Alquist
-function showSystemMessage(text) {
-    var well = $('<div class="well"><b>Alquist:</b> ' + text + '</div>');
-    $("#communication_area").append(well.fadeIn("medium"));
+function showSystemMessage(texts) {
+    for (var i = 0; i < texts.length; i++) {
+        var well = $('<div class="well"><b>Alquist:</b> ' + texts[i] + '</div>');
+        $("#communication_area").append(well.fadeIn("medium"));
+    }
 }
 
 //Shows message of user
