@@ -72,7 +72,7 @@ $(document).on("submit", "#form", function (e) {
 //Shows response of Alquist
 function showSystemMessage(texts) {
     for (var i = 0; i < texts.length; i++) {
-        var well = $('<div class="well"><b>Alquist:</b> ' + texts[i] + '</div>');
+        var well = $('<div class="well"><img src="img/Alquist.png" class="profile_picture"><b>Alquist:</b> ' + texts[i] + '</div>');
         $("#communication_area").append(well.fadeIn("medium"));
     }
 }
@@ -80,7 +80,7 @@ function showSystemMessage(texts) {
 //Shows message of user
 function showUserMessage(text) {
     //Show it on page
-    var well = $('<div class="well"><b>User:</b> ' + text + '</div>');
+    var well = $('<div class="well"><img src="img/User.png" class="profile_picture"><b>User:</b> ' + text + '</div>');
     $("#communication_area").append(well);
 }
 
