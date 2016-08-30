@@ -2,6 +2,8 @@
 
 HTML client for Alquist dialogue manager https://github.com/konrajak/alquist
 
+You can test current demo at https://alquistmanager.github.io/alquist-client/?e=https://alquist.herokuapp.com
+
 ## Usage
 You can change endpoint's address of Alquist dialogue manager by URL paramater ``e=[Alquist endpoint]``.
 
