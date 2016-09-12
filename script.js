@@ -3,6 +3,7 @@ var state = 'init';
 var context = {};
 var session = "";
 var showHideTime = 500;
+var scrollToBottomTime = 500;
 
 //Function called right after the page is loaded
 $(document).ready(function () {
@@ -65,6 +66,16 @@ $(document).on("submit", "#form", function (e) {
     //Prevent reload of page after submitting of form
     e.preventDefault();
     var text = $('#text').val();
+    //send input to Alquist
+    sendInput(text);
+    //Erase input field
+    $('#text').val("");
+    //Show user's input immediately
+    showUserMessage(text);
+});
+
+//send message to Alquist by REST
+function sendInput(text) {
     $.ajax({
         url: endpoint,
         dataType: 'json',
@@ -85,17 +96,15 @@ $(document).on("submit", "#form", function (e) {
             console.log(errorThrown);
         }
     });
-    //Erase input field
-    $('#text').val("");
-    //Show user's input immediately
-    showUserMessage(text);
-});
+}
 
 //Shows response of Alquist
 function showSystemMessage(texts) {
     for (var i = 0; i < texts.length; i++) {
         var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + texts[i] + '</span></td></tr></table></div></div>');
         $("#communication_area").append(well.fadeIn("medium"));
+        //scroll to bottom of page
+        $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
     }
 }
 
@@ -104,6 +113,8 @@ function showUserMessage(text) {
     //Show it on page
     var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/User.png" class="profile_picture"></td><td><b>User:</b><span> ' + text + '</span></td></tr></table></div></div>');
     $("#communication_area").append(well);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
 // Gets parameter by name
@@ -137,12 +148,16 @@ function showButtons(buttons) {
     }
     // show button smoothly
     $('#buttons').show(showHideTime);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
-// helping function to create callback function for button
+// callback function for button click
 function createButtonClickCallback(text) {
     return function () {
-        alert(text);
+        sendInput(text);
+        showUserMessage(text);
+        hideButtons();
     }
 }
 
@@ -156,6 +171,8 @@ function hideButtons() {
 //show input form
 function showInput() {
     $('#form').show(showHideTime);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
 //hide input form
