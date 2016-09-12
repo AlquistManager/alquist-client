@@ -131,7 +131,7 @@ function showButtons(buttons) {
     $('#buttons').empty();
     //create button
     for (var i = 0; i < buttons.length; i++) {
-        var buttonElement = $('<button type="button" class="btn btn-default">' + buttons[i].text + '</button>');
+        var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
         $('#buttons').append(buttonElement);
         buttonElement.click(createButtonClickCallback(buttons[i].input));
     }
