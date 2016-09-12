@@ -102,7 +102,10 @@ function sendInput(text) {
 function showSystemMessage(texts) {
     for (var i = 0; i < texts.length; i++) {
         var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + texts[i] + '</span></td></tr></table></div></div>');
-        $("#communication_area").append(well.fadeIn("medium"));
+        //TODO ADD DELAY TIME
+        setTimeout(function () {
+            $("#communication_area").append(well.fadeIn("medium"))
+        }, 0);
         //scroll to bottom of page
         $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
     }
