@@ -12,27 +12,6 @@ $(document).ready(function () {
 
     //Request response of init node
     init();
-
-    //DELETE BELOW, TEST CODE
-    $("#showButtons").click(function () {
-        showButtons([{'text': 'Text A', 'input': 'Input A'}, {'text': 'Text b', 'input': 'Input b'}, {
-            'text': 'Text c',
-            'input': 'Input C'
-        }]);
-    });
-
-    $("#hideButtons").click(function () {
-        hideButtons();
-    });
-
-    $("#showInput").click(function () {
-        showInput();
-    });
-
-    $("#hideInput").click(function () {
-        hideInput();
-    });
-    //DELETE ABOVE, TEST CODE
 });
 
 //Call init state
@@ -101,22 +80,23 @@ function sendInput(text) {
 //Shows responses of Alquist
 function showSystemMessages(messages) {
     var buttons = [];
+    // absolute delay of showing the messages
     var cumulatedDelay = 0;
     for (var i = 0; i < messages.length; i++) {
         if (messages[i]['type'] == "text") {
-            cumulatedDelay+=messages[i]['delay'];
+            cumulatedDelay += messages[i]['delay'];
             showSystemMessageText(messages[i]['payload']['text'], cumulatedDelay);
         }
-        else if (messages[i]['type'] == "buttons") {
-            buttons.push({"text": messages[i]['payload']['text'], "next_state": messages[i]['payload']['next_state']});
+        else if (messages[i]['type'] == "button") {
+            buttons.push({"text": messages[i]['payload']['label'], "next_state": messages[i]['payload']['next_state']});
         }
-        showButtons(buttons);
     }
+    showButtons(buttons);
 }
 
+// Show text message
 function showSystemMessageText(text, delay) {
     var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + text + '</span></td></tr></table></div></div>');
-    //TODO ADD DELAY TIME
     setTimeout(function () {
         $("#communication_area").append(well.fadeIn("medium"))
     }, delay);
@@ -160,7 +140,7 @@ function showButtons(buttons) {
     for (var i = 0; i < buttons.length; i++) {
         var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
         $('#buttons').append(buttonElement);
-        buttonElement.click(createButtonClickCallback(buttons[i].next_state));
+        buttonElement.click(createButtonClickCallback(buttons[i].text,buttons[i].next_state));
     }
     // show button smoothly
     $('#buttons').show(showHideTime);
@@ -169,9 +149,10 @@ function showButtons(buttons) {
 }
 
 // callback function for button click
-function createButtonClickCallback(text) {
+function createButtonClickCallback(text, next_state) {
     return function () {
-        sendInput(text);
+        state = next_state;
+        sendInput("");
         showUserMessage(text);
         hideButtons();
     }
