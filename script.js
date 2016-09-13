@@ -51,7 +51,7 @@ function init() {
             context = data["context"];
             session = data["session"];
             //show Alquist's response
-            showSystemMessage(data["text"]);
+            showSystemMessages(data["messages"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -90,7 +90,7 @@ function sendInput(text) {
             context = data["context"];
             session = data["session"];
             //show Alquist's response
-            showSystemMessage(data["text"]);
+            showSystemMessages(data["messages"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -98,17 +98,30 @@ function sendInput(text) {
     });
 }
 
-//Shows response of Alquist
-function showSystemMessage(texts) {
-    for (var i = 0; i < texts.length; i++) {
-        var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + texts[i] + '</span></td></tr></table></div></div>');
-        //TODO ADD DELAY TIME
-        setTimeout(function () {
-            $("#communication_area").append(well.fadeIn("medium"))
-        }, 0);
-        //scroll to bottom of page
-        $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+//Shows responses of Alquist
+function showSystemMessages(messages) {
+    var buttons = [];
+    var cumulatedDelay = 0;
+    for (var i = 0; i < messages.length; i++) {
+        if (messages[i]['type'] == "text") {
+            cumulatedDelay+=messages[i]['delay'];
+            showSystemMessageText(messages[i]['payload']['text'], cumulatedDelay);
+        }
+        else if (messages[i]['type'] == "buttons") {
+            buttons.push({"text": messages[i]['payload']['text'], "next_state": messages[i]['payload']['next_state']});
+        }
+        showButtons(buttons);
     }
+}
+
+function showSystemMessageText(text, delay) {
+    var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + text + '</span></td></tr></table></div></div>');
+    //TODO ADD DELAY TIME
+    setTimeout(function () {
+        $("#communication_area").append(well.fadeIn("medium"))
+    }, delay);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
 //Shows message of user
@@ -147,7 +160,7 @@ function showButtons(buttons) {
     for (var i = 0; i < buttons.length; i++) {
         var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
         $('#buttons').append(buttonElement);
-        buttonElement.click(createButtonClickCallback(buttons[i].input));
+        buttonElement.click(createButtonClickCallback(buttons[i].next_state));
     }
     // show button smoothly
     $('#buttons').show(showHideTime);
