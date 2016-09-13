@@ -55,6 +55,7 @@ $(document).on("submit", "#form", function (e) {
 
 //send message to Alquist by REST
 function sendInput(text) {
+    hideButtons();
     $.ajax({
         url: endpoint,
         dataType: 'json',
@@ -91,7 +92,9 @@ function showSystemMessages(messages) {
             buttons.push({"text": messages[i]['payload']['label'], "next_state": messages[i]['payload']['next_state']});
         }
     }
-    showButtons(buttons);
+    setTimeout(function () {
+        showButtons(buttons)
+    }, cumulatedDelay);
 }
 
 // Show text message
@@ -140,7 +143,7 @@ function showButtons(buttons) {
     for (var i = 0; i < buttons.length; i++) {
         var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
         $('#buttons').append(buttonElement);
-        buttonElement.click(createButtonClickCallback(buttons[i].text,buttons[i].next_state));
+        buttonElement.click(createButtonClickCallback(buttons[i].text, buttons[i].next_state));
     }
     // show button smoothly
     $('#buttons').show(showHideTime);
