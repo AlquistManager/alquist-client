@@ -2,6 +2,8 @@ var endpoint;
 var state = 'init';
 var context = {};
 var session = "";
+var showHideTime = 500;
+var scrollToBottomTime = 500;
 
 //Function called right after the page is loaded
 $(document).ready(function () {
@@ -28,7 +30,7 @@ function init() {
             context = data["context"];
             session = data["session"];
             //show Alquist's response
-            showSystemMessage(data["text"]);
+            showSystemMessages(data["messages"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -43,6 +45,17 @@ $(document).on("submit", "#form", function (e) {
     //Prevent reload of page after submitting of form
     e.preventDefault();
     var text = $('#text').val();
+    //send input to Alquist
+    sendInput(text);
+    //Erase input field
+    $('#text').val("");
+    //Show user's input immediately
+    showUserMessage(text);
+});
+
+//send message to Alquist by REST
+function sendInput(text) {
+    hideButtons();
     $.ajax({
         url: endpoint,
         dataType: 'json',
@@ -57,31 +70,50 @@ $(document).on("submit", "#form", function (e) {
             context = data["context"];
             session = data["session"];
             //show Alquist's response
-            showSystemMessage(data["text"]);
+            showSystemMessages(data["messages"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
         }
     });
-    //Erase input field
-    $('#text').val("");
-    //Show user's input immediately
-    showUserMessage(text);
-});
+}
 
-//Shows response of Alquist
-function showSystemMessage(texts) {
-    for (var i = 0; i < texts.length; i++) {
-        var well = $('<div class="well"><img src="img/Alquist.png" class="profile_picture"><b>Alquist:</b> ' + texts[i] + '</div>');
-        $("#communication_area").append(well.fadeIn("medium"));
+//Shows responses of Alquist
+function showSystemMessages(messages) {
+    var buttons = [];
+    // absolute delay of showing the messages
+    var cumulatedDelay = 0;
+    for (var i = 0; i < messages.length; i++) {
+        if (messages[i]['type'] == "text") {
+            cumulatedDelay += messages[i]['delay'];
+            showSystemMessageText(messages[i]['payload']['text'], cumulatedDelay);
+        }
+        else if (messages[i]['type'] == "button") {
+            buttons.push({"text": messages[i]['payload']['label'], "next_state": messages[i]['payload']['next_state']});
+        }
     }
+    setTimeout(function () {
+        showButtons(buttons)
+    }, cumulatedDelay);
+}
+
+// Show text message
+function showSystemMessageText(text, delay) {
+    var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + text + '</span></td></tr></table></div></div>');
+    setTimeout(function () {
+        $("#communication_area").append(well.fadeIn("medium"))
+    }, delay);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
 //Shows message of user
 function showUserMessage(text) {
     //Show it on page
-    var well = $('<div class="well"><img src="img/User.png" class="profile_picture"><b>User:</b> ' + text + '</div>');
+    var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/User.png" class="profile_picture"></td><td><b>User:</b><span> ' + text + '</span></td></tr></table></div></div>');
     $("#communication_area").append(well);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
 // Gets parameter by name
@@ -101,4 +133,49 @@ function getEndpoint() {
         endpoint = "http://localhost:5000/";
     }
     return endpoint;
+}
+
+//show buttons
+function showButtons(buttons) {
+    //clear old buttons
+    $('#buttons').empty();
+    //create button
+    for (var i = 0; i < buttons.length; i++) {
+        var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
+        $('#buttons').append(buttonElement);
+        buttonElement.click(createButtonClickCallback(buttons[i].text, buttons[i].next_state));
+    }
+    // show button smoothly
+    $('#buttons').show(showHideTime);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+}
+
+// callback function for button click
+function createButtonClickCallback(text, next_state) {
+    return function () {
+        state = next_state;
+        sendInput("");
+        showUserMessage(text);
+        hideButtons();
+    }
+}
+
+//hide buttons smoothly
+function hideButtons() {
+    $('#buttons').hide(showHideTime, function () {
+        $('#buttons').empty();
+    });
+}
+
+//show input form
+function showInput() {
+    $('#form').show(showHideTime);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+}
+
+//hide input form
+function hideInput() {
+    $('#form').hide(showHideTime);
 }
