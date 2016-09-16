@@ -93,18 +93,20 @@ function showSystemMessages(messages) {
         }
     }
     setTimeout(function () {
-        showButtons(buttons)
-    }, cumulatedDelay);
+        showButtons(buttons);
+    }, cumulatedDelay + 1);
 }
 
 // Show text message
 function showSystemMessageText(text, delay) {
     var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + text + '</span></td></tr></table></div></div>');
     setTimeout(function () {
-        $("#communication_area").append(well.fadeIn("medium"))
+        $("#communication_area").append(well.fadeIn("medium"));
+        //scroll to bottom of page
+        setTimeout(function () {
+            $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+        }, 1);
     }, delay);
-    //scroll to bottom of page
-    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
 //Shows message of user
