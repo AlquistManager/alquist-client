@@ -92,8 +92,9 @@ function showSystemMessages(messages) {
             buttons.push({"text": messages[i]['payload']['label'], "next_state": messages[i]['payload']['next_state']});
         }
     }
+    console.log("Send buttons: " +buttons.length);
     setTimeout(function () {
-        showButtons(buttons)
+        showButtons(buttons);
     }, cumulatedDelay);
 }
 
@@ -101,10 +102,12 @@ function showSystemMessages(messages) {
 function showSystemMessageText(text, delay) {
     var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + text + '</span></td></tr></table></div></div>');
     setTimeout(function () {
-        $("#communication_area").append(well.fadeIn("medium"))
+        $("#communication_area").append(well.fadeIn("medium"));
+        //scroll to bottom of page
+        setTimeout(function () {
+            $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+        }, 1);
     }, delay);
-    //scroll to bottom of page
-    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
 //Shows message of user
@@ -143,6 +146,7 @@ function showButtons(buttons) {
     for (var i = 0; i < buttons.length; i++) {
         var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
         $('#buttons').append(buttonElement);
+        console.log(buttons[i].text + " button appended");
         buttonElement.click(createButtonClickCallback(buttons[i].text, buttons[i].next_state));
     }
     // show button smoothly
@@ -163,9 +167,7 @@ function createButtonClickCallback(text, next_state) {
 
 //hide buttons smoothly
 function hideButtons() {
-    $('#buttons').hide(showHideTime, function () {
-        $('#buttons').empty();
-    });
+    $('#buttons').hide(showHideTime);
 }
 
 //show input form
