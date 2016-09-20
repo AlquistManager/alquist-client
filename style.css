@@ -5,9 +5,15 @@
 }
 
 .button{
-    margin: -10px 7px 8px 0px;
+    margin: 0px 7px 8px 0px;
 }
 
 body{
     margin-bottom: 20px;
+}
+
+.message_iframe{
+    width: 100%;
+    border: none;
+    margin-left: 6px;
 }

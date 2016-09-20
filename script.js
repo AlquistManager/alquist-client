@@ -93,6 +93,10 @@ function showSystemMessages(messages) {
         else if (messages[i]['type'] == "button") {
             buttons.push({"text": messages[i]['payload']['label'], "next_state": messages[i]['payload']['next_state']});
         }
+        else if (messages[i]['type'] == "iframe") {
+            cumulatedDelay += messages[i]['delay'];
+            showIframe(messages[i]['payload']['url'], messages[i]['payload']['width'], messages[i]['payload']['height'], messages[i]['payload']['scrolling'], messages[i]['payload']['align'], cumulatedDelay);
+        }
     }
     setTimeout(function () {
         showButtons(buttons);
@@ -159,6 +163,17 @@ function showButtons(buttons) {
     $('#buttons').show(showHideTime);
     //scroll to bottom of page
     $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+}
+
+function showIframe(url, width, height, scrolling, align, delay) {
+    var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b></td><td style="width: 100%; text-align: '+align+';"><iframe src=' + url + ' style="height: ' + height + 'px; width: ' + width + '%;" class="message_iframe" scrolling="' + scrolling + '"></iframe></td></tr></table></div></div>');
+    setTimeout(function () {
+        $("#communication_area").append(well.fadeIn("medium"));
+        //scroll to bottom of page
+        setTimeout(function () {
+            $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+        }, 1);
+    }, delay);
 }
 
 // callback function for button click
