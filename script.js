@@ -55,6 +55,8 @@ $(document).on("submit", "#form", function (e) {
 
 //send message to Alquist by REST
 function sendInput(text) {
+    // escape html tags
+    text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     hideButtons();
     $.ajax({
         url: endpoint,
@@ -99,6 +101,8 @@ function showSystemMessages(messages) {
 
 // Show text message
 function showSystemMessageText(text, delay) {
+    // escape html tags
+    text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + text + '</span></td></tr></table></div></div>');
     setTimeout(function () {
         $("#communication_area").append(well.fadeIn("medium"));
@@ -111,6 +115,8 @@ function showSystemMessageText(text, delay) {
 
 //Shows message of user
 function showUserMessage(text) {
+    // escape html tags
+    text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     //Show it on page
     var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/User.png" class="profile_picture"></td><td><b>User:</b><span> ' + text + '</span></td></tr></table></div></div>');
     $("#communication_area").append(well);
@@ -143,6 +149,8 @@ function showButtons(buttons) {
     $('#buttons').empty();
     //create button
     for (var i = 0; i < buttons.length; i++) {
+        // escape html tags
+        buttons[i].text = buttons[i].text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
         $('#buttons').append(buttonElement);
         buttonElement.click(createButtonClickCallback(buttons[i].text, buttons[i].next_state));
