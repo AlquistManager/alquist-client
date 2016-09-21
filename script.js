@@ -91,7 +91,8 @@ function showSystemMessages(messages) {
             showSystemMessageText(messages[i]['payload']['text'], cumulatedDelay);
         }
         else if (messages[i]['type'] == "button") {
-            buttons.push({"text": messages[i]['payload']['label'], "next_state": messages[i]['payload']['next_state']});
+            buttons.push({"text": messages[i]['payload']['label'], "next_state": messages[i]['payload']['next_state'],
+                "type": messages[i]['payload']['type']});
         }
         else if (messages[i]['type'] == "iframe") {
             cumulatedDelay += messages[i]['delay'];
@@ -156,6 +157,10 @@ function showButtons(buttons) {
         // escape html tags
         buttons[i].text = buttons[i].text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
+        if (buttons[i].type=="Main"){
+            buttonElement.addClass("btn-primary");
+            buttonElement.removeClass("btn-default");
+        }
         $('#buttons').append(buttonElement);
         buttonElement.click(createButtonClickCallback(buttons[i].text, buttons[i].next_state));
     }
