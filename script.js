@@ -106,8 +106,6 @@ function showSystemMessages(messages) {
 
 // Show text message
 function showSystemMessageText(text, delay) {
-    // escape html tags
-    text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + text + '</span></td></tr></table></div></div>');
     setTimeout(function () {
         $("#communication_area").append(well.fadeIn("medium"));
@@ -154,8 +152,6 @@ function showButtons(buttons) {
     $('#buttons').empty();
     //create button
     for (var i = 0; i < buttons.length; i++) {
-        // escape html tags
-        buttons[i].text = buttons[i].text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
         if (buttons[i].type=="Main"){
             buttonElement.addClass("btn-primary");
