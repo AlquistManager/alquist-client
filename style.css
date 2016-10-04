@@ -1,7 +1,18 @@
-.profile_picture {
+.profile_picture_left {
     width: 50px;
     height: 50px;
     margin-right: 10px;
+}
+
+.profile_picture_right {
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+}
+
+.empty_space {
+    width: 60px;
+    height: 50px;
 }
 
 .button {
@@ -11,6 +22,8 @@
 body {
     margin-bottom: 20px;
     background: #FAFAFA;
+    font-family: 'Roboto', sans-serif;
+    font-size: 17px;
 }
 
 .message_iframe {
