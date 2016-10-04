@@ -1,19 +1,42 @@
-.profile_picture{
+.profile_picture {
     width: 50px;
     height: 50px;
     margin-right: 10px;
 }
 
-.button{
+.button {
     margin: 0px 7px 8px 0px;
 }
 
-body{
+body {
     margin-bottom: 20px;
+    background: #FAFAFA;
 }
 
-.message_iframe{
+.message_iframe {
     width: 100%;
     border: none;
     margin-left: 6px;
+}
+
+.well {
+    background-color: white;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.12);
+    border-radius: 2px;
+    margin-bottom: 0px;
+}
+
+.well.well_system {
+    background-color: #2196F3;
+    color: white;
+}
+
+.message{
+    margin-bottom: 20px;
+}
+
+.message_user{
+    margin-left: auto;
+    margin-right:0;
 }
