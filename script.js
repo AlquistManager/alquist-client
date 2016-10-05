@@ -44,11 +44,11 @@ function init() {
 $(document).on("submit", "#form", function (e) {
     //Prevent reload of page after submitting of form
     e.preventDefault();
-    var text = $('#text').val();
+    var text = $('#input_field').val();
     //send input to Alquist
     sendInput(text);
     //Erase input field
-    $('#text').val("");
+    $('#input_field').val("");
     //Show user's input immediately
     showUserMessage(text);
 });
@@ -91,8 +91,10 @@ function showSystemMessages(messages) {
             showSystemMessageText(messages[i]['payload']['text'], cumulatedDelay);
         }
         else if (messages[i]['type'] == "button") {
-            buttons.push({"text": messages[i]['payload']['label'], "next_state": messages[i]['payload']['next_state'],
-                "type": messages[i]['payload']['type']});
+            buttons.push({
+                "text": messages[i]['payload']['label'], "next_state": messages[i]['payload']['next_state'],
+                "type": messages[i]['payload']['type']
+            });
         }
         else if (messages[i]['type'] == "iframe") {
             cumulatedDelay += messages[i]['delay'];
@@ -106,7 +108,7 @@ function showSystemMessages(messages) {
 
 // Show text message
 function showSystemMessageText(text, delay) {
-    var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b><span> ' + text + '</span></td></tr></table></div></div>');
+    var well = $('<table class="message"><tr><td><img src="img/Alquist.png" class="profile_picture_left"></td><td><div class="arrow-left"></div></td><td><div class="well well_system"><div class="clearfix"><b>Alquist:</b><span> ' + text + '</span></div></div></td><td class="empty_space"></td></tr></table>');
     setTimeout(function () {
         $("#communication_area").append(well.fadeIn("medium"));
         //scroll to bottom of page
@@ -121,7 +123,7 @@ function showUserMessage(text) {
     // escape html tags
     text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     //Show it on page
-    var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/User.png" class="profile_picture"></td><td><b>User:</b><span> ' + text + '</span></td></tr></table></div></div>');
+    var well = $('<table class="message message_user"><tr><td class="empty_space"></td><td><div class="well"><div class="clearfix"><b>User:</b><span> ' + text + '</span></div></div></td><td><div class="arrow-right"></div></td><td><img src="img/User.png" class="profile_picture_right"></td></tr></table>');
     $("#communication_area").append(well);
     //scroll to bottom of page
     $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
@@ -152,10 +154,10 @@ function showButtons(buttons) {
     $('#buttons').empty();
     //create button
     for (var i = 0; i < buttons.length; i++) {
-        var buttonElement = $('<button type="button" class="btn btn-default button">' + buttons[i].text + '</button>');
-        if (buttons[i].type=="Main"){
-            buttonElement.addClass("btn-primary");
-            buttonElement.removeClass("btn-default");
+        var buttonElement = $('<button type="button" class="btn button-slave button">' + buttons[i].text + '</button>');
+        if (buttons[i].type == "Main") {
+            buttonElement.addClass("button-main");
+            buttonElement.removeClass("button-slave");
         }
         $('#buttons').append(buttonElement);
         buttonElement.click(createButtonClickCallback(buttons[i].text, buttons[i].next_state));
@@ -167,7 +169,7 @@ function showButtons(buttons) {
 }
 
 function showIframe(url, width, height, scrolling, align, delay) {
-    var well = $('<div class="well"><div class="clearfix"><table><tr><td><img src="img/Alquist.png" class="profile_picture"></td><td><b>Alquist:</b></td><td style="width: 100%; text-align: '+align+';"><iframe src=' + url + ' style="height: ' + height + 'px; width: ' + width + '%;" class="message_iframe" scrolling="' + scrolling + '"></iframe></td></tr></table></div></div>');
+    var well = $('<table class="message"><tr><td><img src="img/Alquist.png" class="profile_picture_left"></td><td><div class="arrow-left"></div></td><td style="width: 100%"><div class="well well_system"><div class="clearfix"><table style="width:100%"><tr><td><b>Alquist:</b></td><td style="width: 100%; text-align: ' + align + ';"><iframe src=' + url + ' style="height: ' + height + 'px; width: ' + width + '%;"class="message_iframe" scrolling="' + scrolling + '"></iframe></td></tr></table></div></div></td><td class="empty_space" style="float: right;"></td></tr></table>');
     setTimeout(function () {
         $("#communication_area").append(well.fadeIn("medium"));
         //scroll to bottom of page
