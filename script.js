@@ -14,6 +14,7 @@ $(document).ready(function () {
     //Request response of init node
     init();
     speakAsynchronously();
+    recognize();
 });
 
 //Call init state
@@ -218,4 +219,37 @@ function speakAsynchronously() {
         responsiveVoice.speak(speakQueue.shift(), "Czech Female", {rate: 1.5});
     }
     setTimeout(speakAsynchronously, 300);
+}
+
+function recognize() {
+    var RECOGNIZER_CONTINUOUS = false;
+    var RECOGNIZER_LANG = "cs";
+    var RECOGNIZER_INTERIM_RESULTS = true;
+    var recognizer = new webkitSpeechRecognition();
+    recognizer.continuous = RECOGNIZER_CONTINUOUS;
+    recognizer.lang = RECOGNIZER_LANG;
+    recognizer.interimResults = RECOGNIZER_INTERIM_RESULTS;
+
+    //detecting voice
+    recognizer.onresult = function (event) {
+        var recognized = "";
+        for (var i = event.resultIndex; i < event.results.length; ++i) {
+            //trigering search
+            if (event.results[i].isFinal == true) {
+                recognizer.stop();
+            }
+            //keep recognizing
+            else {
+                recognized += ((event.results[i])[0].transcript);
+                $('#input_field').val(recognized);
+            }
+        }
+    };
+
+    recognizer.onend = function () {
+        recognizer = null;
+    };
+
+    //start of recognition
+    recognizer.start();
 }
