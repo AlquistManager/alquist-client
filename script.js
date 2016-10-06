@@ -4,6 +4,7 @@ var context = {};
 var session = "";
 var showHideTime = 500;
 var scrollToBottomTime = 500;
+var speakQueue = [];
 
 //Function called right after the page is loaded
 $(document).ready(function () {
@@ -12,6 +13,7 @@ $(document).ready(function () {
 
     //Request response of init node
     init();
+    speakAsynchronously();
 });
 
 //Call init state
@@ -108,6 +110,7 @@ function showSystemMessages(messages) {
 
 // Show text message
 function showSystemMessageText(text, delay) {
+    speak(text);
     var well = $('<table class="message"><tr><td><img src="img/Alquist.png" class="profile_picture_left"></td><td><div class="arrow-left"></div></td><td><div class="well well_system"><div class="clearfix"><b>Alquist:</b><span> ' + text + '</span></div></div></td><td class="empty_space"></td></tr></table>');
     setTimeout(function () {
         $("#communication_area").append(well.fadeIn("medium"));
@@ -204,4 +207,15 @@ function showInput() {
 //hide input form
 function hideInput() {
     $('#form').hide(showHideTime);
+}
+
+function speak(text) {
+    speakQueue.push(text);
+}
+
+function speakAsynchronously() {
+    if (speakQueue.length != 0 && !responsiveVoice.isPlaying()) {
+        responsiveVoice.speak(speakQueue.shift(), "Czech Female", {rate: 1.5});
+    }
+    setTimeout(speakAsynchronously, 300);
 }
