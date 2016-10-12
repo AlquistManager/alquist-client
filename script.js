@@ -219,7 +219,7 @@ function speak(text) {
 
 function speakAsynchronously() {
     if (speakQueue.length != 0 && !responsiveVoice.isPlaying()) {
-        responsiveVoice.speak(speakQueue.shift().replace(/<([^ >]+)[^>]*>.*?<\/\1>|<[^\/]+\/>/ig, ""), "Czech Female", {rate: 1.5});
+        responsiveVoice.speak(speakQueue.shift().replace(/<span>.*<\/span>/g, ""), "Czech Female", {rate: 1.5});
     }
     setTimeout(speakAsynchronously, 300);
 }
