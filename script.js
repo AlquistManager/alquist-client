@@ -161,7 +161,7 @@ function showButtons(buttons) {
         if (buttons[i].type == "demo1") {
             buttonElement.addClass("demo1");
             buttonElement.removeClass("button-slave");
-        }else if(buttons[i].type == "demo2"){
+        } else if (buttons[i].type == "demo2") {
             buttonElement.addClass("demo2");
             buttonElement.removeClass("button-slave");
         }
@@ -219,7 +219,10 @@ function speak(text) {
 
 function speakAsynchronously() {
     if (speakQueue.length != 0 && !responsiveVoice.isPlaying()) {
-        responsiveVoice.speak(speakQueue.shift().replace(/<span>.*<\/span>/g, ""), "Czech Female", {rate: 1.5});
+        var toSpeak = speakQueue.shift().replace(/<span>.*<\/span>/g, "");
+        if (toSpeak != "") {
+            responsiveVoice.speak(toSpeak, "Czech Female", {rate: 1.5});
+        }
     }
     setTimeout(speakAsynchronously, 300);
 }
@@ -230,10 +233,10 @@ $(document).on("click", "#voice", function (e) {
     e.preventDefault();
     if (recognizer == null) {
         recognize();
-        $('#voice').css("color","black");
+        $('#voice').css("color", "black");
         console.log(recognizer);
     } else {
-        $('#voice').css("color","white");
+        $('#voice').css("color", "white");
         recognizer.stop();
         recognizer = null;
         console.log(recognizer);
@@ -257,7 +260,7 @@ function recognize() {
             //trigering search
             if (event.results[i].isFinal == true) {
                 recognizer.stop();
-                $('#voice').css("color","white");
+                $('#voice').css("color", "white");
             }
             //keep recognizing
             else {
@@ -269,7 +272,7 @@ function recognize() {
 
     recognizer.onend = function () {
         recognizer = null;
-        $('#voice').css("color","white");
+        $('#voice').css("color", "white");
     };
 
     //start of recognition
