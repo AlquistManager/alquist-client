@@ -14,7 +14,6 @@ $(document).ready(function () {
     //Request response of init node
     init();
     speakAsynchronously();
-    recognize();
 });
 
 //Call init state
@@ -159,10 +158,14 @@ function showButtons(buttons) {
     //create button
     for (var i = 0; i < buttons.length; i++) {
         var buttonElement = $('<button type="button" class="btn button-slave button">' + buttons[i].text + '</button>');
-        if (buttons[i].type == "Main") {
-            buttonElement.addClass("button-main");
+        if (buttons[i].type == "demo1") {
+            buttonElement.addClass("demo1");
+            buttonElement.removeClass("button-slave");
+        }else if(buttons[i].type == "demo2"){
+            buttonElement.addClass("demo2");
             buttonElement.removeClass("button-slave");
         }
+
         $('#buttons').append(buttonElement);
         buttonElement.click(createButtonClickCallback(buttons[i].text, buttons[i].next_state));
     }
@@ -221,11 +224,28 @@ function speakAsynchronously() {
     setTimeout(speakAsynchronously, 300);
 }
 
+//Click on submit button
+$(document).on("click", "#voice", function (e) {
+    //Prevent reload of page after submitting of form
+    e.preventDefault();
+    if (recognizer == null) {
+        recognize();
+        $('#voice').css("color","black");
+        console.log(recognizer);
+    } else {
+        $('#voice').css("color","white");
+        recognizer.stop();
+        recognizer = null;
+        console.log(recognizer);
+    }
+});
+
+var recognizer;
 function recognize() {
     var RECOGNIZER_CONTINUOUS = false;
     var RECOGNIZER_LANG = "cs";
     var RECOGNIZER_INTERIM_RESULTS = true;
-    var recognizer = new webkitSpeechRecognition();
+    recognizer = new webkitSpeechRecognition();
     recognizer.continuous = RECOGNIZER_CONTINUOUS;
     recognizer.lang = RECOGNIZER_LANG;
     recognizer.interimResults = RECOGNIZER_INTERIM_RESULTS;
@@ -237,6 +257,7 @@ function recognize() {
             //trigering search
             if (event.results[i].isFinal == true) {
                 recognizer.stop();
+                $('#voice').css("color","white");
             }
             //keep recognizing
             else {
@@ -248,6 +269,7 @@ function recognize() {
 
     recognizer.onend = function () {
         recognizer = null;
+        $('#voice').css("color","white");
     };
 
     //start of recognition
