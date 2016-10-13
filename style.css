@@ -153,3 +153,37 @@ body {
     background-color: #00796d;
     color: #FFF;
 }
+
+.demo_button{
+    margin-left: 3px !important;
+}
+
+.demo1 {
+    background-color: #FFC107;
+    color: #000;
+}
+
+.demo1:hover{
+    background-color: #E5AD06;
+    color: #000;
+}
+
+.demo1:focus,.demo1:active{
+    background-color: #CE9B05;
+    color: #000;
+}
+
+.demo2{
+    background-color: #FF5722;
+    color: #FFF;
+}
+
+.demo2:hover{
+    background-color: #E54E1E;
+    color: #FFF;
+}
+
+.demo2:focus,.demo2:active{
+    background-color: #CE461B;
+    color: #FFF;
+}
