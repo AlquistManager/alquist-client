@@ -4,7 +4,6 @@ var context = {};
 var session = "";
 var showHideTime = 500;
 var scrollToBottomTime = 500;
-var speakQueue = [];
 
 //Function called right after the page is loaded
 $(document).ready(function () {
@@ -13,7 +12,6 @@ $(document).ready(function () {
 
     //Request response of init node
     init();
-    speakAsynchronously();
 });
 
 //Call init state
@@ -110,7 +108,6 @@ function showSystemMessages(messages) {
 
 // Show text message
 function showSystemMessageText(text, delay) {
-    speak(text);
     var well = $('<table class="message"><tr><td><img src="img/Alquist.png" class="profile_picture_left"></td><td><div class="arrow-left"></div></td><td><div class="well well_system"><div class="clearfix"><b>Alquist:</b><span> ' + text + '</span></div></div></td><td class="empty_space"></td></tr></table>');
     setTimeout(function () {
         $("#communication_area").append(well.fadeIn("medium"));
@@ -158,14 +155,10 @@ function showButtons(buttons) {
     //create button
     for (var i = 0; i < buttons.length; i++) {
         var buttonElement = $('<button type="button" class="btn button-slave button">' + buttons[i].text + '</button>');
-        if (buttons[i].type == "demo1") {
-            buttonElement.addClass("demo1");
-            buttonElement.removeClass("button-slave");
-        } else if (buttons[i].type == "demo2") {
-            buttonElement.addClass("demo2");
+        if (buttons[i].type == "Main") {
+            buttonElement.addClass("button-main");
             buttonElement.removeClass("button-slave");
         }
-
         $('#buttons').append(buttonElement);
         buttonElement.click(createButtonClickCallback(buttons[i].text, buttons[i].next_state));
     }
@@ -211,70 +204,4 @@ function showInput() {
 //hide input form
 function hideInput() {
     $('#form').hide(showHideTime);
-}
-
-function speak(text) {
-    speakQueue.push(text);
-}
-
-function speakAsynchronously() {
-    if (speakQueue.length != 0 && !responsiveVoice.isPlaying()) {
-        var toSpeak = speakQueue.shift().replace(/<span>.*<\/span>/g, "");
-        if (toSpeak != "") {
-            responsiveVoice.speak(toSpeak, "Czech Female", {rate: 1.5});
-        }
-    }
-    setTimeout(speakAsynchronously, 300);
-}
-
-//Click on submit button
-$(document).on("click", "#voice", function (e) {
-    //Prevent reload of page after submitting of form
-    e.preventDefault();
-    if (recognizer == null) {
-        recognize();
-        $('#voice').css("color", "black");
-        console.log(recognizer);
-    } else {
-        $('#voice').css("color", "white");
-        recognizer.stop();
-        recognizer = null;
-        console.log(recognizer);
-    }
-});
-
-var recognizer;
-function recognize() {
-    var RECOGNIZER_CONTINUOUS = false;
-    var RECOGNIZER_LANG = "cs";
-    var RECOGNIZER_INTERIM_RESULTS = true;
-    recognizer = new webkitSpeechRecognition();
-    recognizer.continuous = RECOGNIZER_CONTINUOUS;
-    recognizer.lang = RECOGNIZER_LANG;
-    recognizer.interimResults = RECOGNIZER_INTERIM_RESULTS;
-
-    //detecting voice
-    recognizer.onresult = function (event) {
-        var recognized = "";
-        for (var i = event.resultIndex; i < event.results.length; ++i) {
-            //trigering search
-            if (event.results[i].isFinal == true) {
-                recognizer.stop();
-                $('#voice').css("color", "white");
-            }
-            //keep recognizing
-            else {
-                recognized += ((event.results[i])[0].transcript);
-                $('#input_field').val(recognized);
-            }
-        }
-    };
-
-    recognizer.onend = function () {
-        recognizer = null;
-        $('#voice').css("color", "white");
-    };
-
-    //start of recognition
-    recognizer.start();
 }
