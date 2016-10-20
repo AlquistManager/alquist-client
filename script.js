@@ -53,6 +53,22 @@ $(document).on("submit", "#form", function (e) {
     showUserMessage(text);
 });
 
+//Click on reset button
+$(document).on("click", "#reset", function (e) {
+    //Prevent reload of page after submitting of form
+    e.preventDefault();
+    //send input to Alquist
+    sendInput("!reset");
+});
+
+//Click on back button
+$(document).on("click", "#back", function (e) {
+    //Prevent reload of page after submitting of form
+    e.preventDefault();
+    //send input to Alquist
+    sendInput("!undo");
+});
+
 //send message to Alquist by REST
 function sendInput(text) {
     // escape html tags
