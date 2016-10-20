@@ -58,6 +58,7 @@ function sendInput(text) {
     // escape html tags
     text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     hideButtons();
+    hideCheckboxes();
     $.ajax({
         url: endpoint,
         dataType: 'json',
@@ -83,6 +84,7 @@ function sendInput(text) {
 //Shows responses of Alquist
 function showSystemMessages(messages) {
     var buttons = [];
+    var checkboxes = [];
     // absolute delay of showing the messages
     var cumulatedDelay = 0;
     for (var i = 0; i < messages.length; i++) {
@@ -96,6 +98,12 @@ function showSystemMessages(messages) {
                 "type": messages[i]['payload']['type']
             });
         }
+        else if (messages[i]['type'] == "checkbox") {
+            checkboxes.push({
+                "text": messages[i]['payload']['label'], "update_keys": messages[i]['payload']['update_keys'],
+                "type": messages[i]['payload']['type']
+            });
+        }
         else if (messages[i]['type'] == "iframe") {
             cumulatedDelay += messages[i]['delay'];
             showIframe(messages[i]['payload']['url'], messages[i]['payload']['width'], messages[i]['payload']['height'], messages[i]['payload']['scrolling'], messages[i]['payload']['align'], cumulatedDelay);
@@ -103,6 +111,7 @@ function showSystemMessages(messages) {
     }
     setTimeout(function () {
         showButtons(buttons);
+        showCheckboxes(checkboxes)
     }, cumulatedDelay);
 }
 
@@ -168,6 +177,22 @@ function showButtons(buttons) {
     $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
+//show buttons
+function showCheckboxes(checkboxes) {
+    //clear old checkboxes
+    $('#checkboxes').empty();
+    //create button
+    for (var i = 0; i < checkboxes.length; i++) {
+        var checkboxElement = $('<label class="checkboxes"><input type="checkbox" value="" class="checkbox-label">' + checkboxes[i].text + '</label>');
+        $('#checkboxes').append(checkboxElement);
+        checkboxElement.click(createCheckboxClickCallback(checkboxElement.find("input")[0], checkboxes[i].update_keys));
+    }
+    // show button smoothly
+    $('#checkboxes').show(showHideTime);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+}
+
 function showIframe(url, width, height, scrolling, align, delay) {
     var well = $('<table class="message"><tr><td><img src="img/Alquist.png" class="profile_picture_left"></td><td><div class="arrow-left"></div></td><td style="width: 100%"><div class="well well_system"><div class="clearfix"><table style="width:100%"><tr><td><b>Alquist:</b></td><td style="width: 100%; text-align: ' + align + ';"><iframe src=' + url + ' style="height: ' + height + 'px; width: ' + width + '%;"class="message_iframe" scrolling="' + scrolling + '"></iframe></td></tr></table></div></div></td><td class="empty_space" style="float: right;"></td></tr></table>');
     setTimeout(function () {
@@ -189,9 +214,29 @@ function createButtonClickCallback(text, next_state) {
     }
 }
 
+// callback function for checkbox click
+function createCheckboxClickCallback(checkboxElement, update_keys) {
+    return function () {
+        if (checkboxElement.checked) {
+            jQuery.extend(context, update_keys);
+        } else {
+            for (var k in update_keys) {
+                // skip loop if the property is from prototype
+                if (!update_keys.hasOwnProperty(k)) continue;
+                delete context[k];
+            }
+        }
+    }
+}
+
 //hide buttons smoothly
 function hideButtons() {
     $('#buttons').hide(showHideTime);
+}
+
+//hide checkboxes smoothly
+function hideCheckboxes() {
+    $('#checkboxes').hide(showHideTime);
 }
 
 //show input form

@@ -64,6 +64,15 @@
     border-radius: 2px;
 }
 
+.checkboxes {
+    margin: 0px 15px 8px 0px;
+    font-weight: 400;
+}
+
+.checkbox-label {
+    margin: 0px 2px 0px 0px !important;
+}
+
 body {
     margin-bottom: 20px;
     background: #EEEEEE;
