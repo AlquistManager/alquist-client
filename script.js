@@ -1,4 +1,5 @@
 var endpoint;
+var bot;
 var state = 'init';
 var context = {};
 var session = "";
@@ -9,6 +10,7 @@ var scrollToBottomTime = 500;
 $(document).ready(function () {
     //Get endpoint from URL address
     endpoint = getEndpoint();
+    bot = getBot();
 
     //Request response of init node
     init();
@@ -20,7 +22,7 @@ function init() {
         url: endpoint,
         type: 'post',
         processData: false,
-        data: JSON.stringify({"text": '', "state": state, "context": context, "session": session}),
+        data: JSON.stringify({"text": '', "bot": bot, "state": state, "context": context, "session": session}),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
 
@@ -80,7 +82,7 @@ function sendInput(text) {
         dataType: 'json',
         type: 'post',
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify({"text": text, "state": state, "context": context, "session": session}),
+        data: JSON.stringify({"text": text, "bot": bot, "state": state, "context": context, "session": session}),
         processData: false,
 
         success: function (data, textStatus, jQxhr) {
@@ -171,6 +173,17 @@ function getEndpoint() {
         endpoint = "http://localhost:5000/";
     }
     return endpoint;
+}
+
+//Get endpoint of Alquist from URL parameters
+function getBot() {
+    //Get endpoint from URL
+    var bot = getParameterByName("bot", window.location.href);
+    //Use default, if no endpoint is present
+    if (bot == null) {
+        bot = "";
+    }
+    return bot;
 }
 
 //show buttons
