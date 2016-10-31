@@ -61,6 +61,7 @@ $(document).on("click", "#reset", function (e) {
     e.preventDefault();
     //send input to Alquist
     sendInput("!reset");
+    showUserMessage("Začít od začátku");
 });
 
 //Click on back button
@@ -69,6 +70,8 @@ $(document).on("click", "#back", function (e) {
     e.preventDefault();
     //send input to Alquist
     sendInput("!undo");
+    showUserMessage("Zpět");
+
 });
 
 //send message to Alquist by REST
