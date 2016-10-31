@@ -15,8 +15,8 @@
     height: 0px;
 }
 
-.btn:focus,.btn:active {
-   outline: none !important;
+.btn:focus, .btn:active {
+    outline: none !important;
 }
 
 .button-main {
@@ -24,37 +24,37 @@
     color: #FFF;
 }
 
-.button-main:hover{
+.button-main:hover {
     background-color: #00877a;
     color: #FFF;
 }
 
-.button-main:focus,.button-main:active{
+.button-main:focus, .button-main:active {
     background-color: #00796d;
     color: #FFF;
 }
 
-.button-slave{
+.button-slave {
     background-color: #FFFFFF;
 }
 
-.button-slave:hover{
+.button-slave:hover {
     background-color: #e5e5e5;
 }
 
-.main-name{
+.main-name {
     color: #009688;
-    text-decoration:none;
+    text-decoration: none;
 }
 
-.main-name:hover{
+.main-name:hover {
     color: #00877a;
-    text-decoration:none;
+    text-decoration: none;
 }
 
-.main-name:focus,.button-main:active{
+.main-name:focus, .button-main:active {
     color: #00796d;
-    text-decoration:none;
+    text-decoration: none;
 }
 
 .button {
@@ -152,17 +152,24 @@ body {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
-#submit:hover{
+#submit:hover {
     background-color: #00877a;
     color: #FFF;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
-#submit:focus,.button-main:active{
+#submit:focus, .button-main:active {
     background-color: #00796d;
     color: #FFF;
 }
 
-#back{
-    margin-left: 5px;
+#back_buttons {
+    padding-left: 0px;
+}
+
+@media (max-width: 992px) {
+    #back_buttons {
+        text-align: right !important;
+        margin-top: 10px;
+    }
 }
