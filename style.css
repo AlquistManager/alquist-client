@@ -167,9 +167,55 @@ body {
     padding-left: 0px;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 993px) {
     #back_buttons {
         text-align: right !important;
         margin-top: 10px;
+    }
+}
+
+@media (max-width: 770px) {
+    body {
+        font-size: 15px;
+    }
+
+    .profile_picture_left {
+        width: 40px;
+        height: 40px;
+        margin-right: 8px;
+    }
+
+    .profile_picture_right {
+        width: 40px;
+        height: 40px;
+        margin-left: 8px;
+    }
+
+    .empty_space {
+        width: 58px;
+        height: 0px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        font-size: 13px;
+    }
+
+    .profile_picture_left {
+        width: 30px;
+        height: 30px;
+        margin-right: 6px;
+    }
+
+    .profile_picture_right {
+        width: 30px;
+        height: 30px;
+        margin-left: 6px;
+    }
+
+    .empty_space {
+        width: 46px;
+        height: 0px;
     }
 }

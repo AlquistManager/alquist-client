@@ -17,8 +17,8 @@
 <div class="container">
     <h1 class="text-center"><a href="" class="main-name"><b>Alquist client</b></a></h1>
     <div class="row">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-6">
+        <div class="col-md-1"></div>
+        <div class="col-md-9">
             <!-- AREA FOR SHOWING MESSAGES -->
             <div id="communication_area">
             </div>
@@ -39,19 +39,21 @@
 
             <!-- AREA FOR SHOWING INPUT FIELD -->
         </div>
-        <div class="col-sm-3">
+        <div class="col-md-2">
         </div>
     </div>
     <div class="row">
         <div class="col-md-1">
         </div>
         <div class="col-md-9">
-            <div class="input-group"><input type="text" class="form-control" id="input_field"
-                                            placeholder="Write your message...">
-                <span class="input-group-btn">
+            <form id="form">
+                <div class="input-group"><input type="text" class="form-control" id="input_field"
+                                                placeholder="Write your message...">
+                    <span class="input-group-btn">
                 <button class="btn button-main btn-md" type="submit" id="submit">Submit</button>
             </span>
-            </div>
+                </div>
+            </form>
         </div>
         <div class="col-md-2" id="back_buttons">
             <span class="btn-group">
