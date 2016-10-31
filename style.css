@@ -176,7 +176,7 @@ body {
 
 @media (max-width: 770px) {
     body {
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .profile_picture_left {
@@ -199,7 +199,7 @@ body {
 
 @media (max-width: 600px) {
     body {
-        font-size: 13px;
+        font-size: 15px;
     }
 
     .profile_picture_left {
