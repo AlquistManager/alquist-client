@@ -13,7 +13,8 @@ $(document).ready(function () {
     //Get endpoint from URL address
     endpoint = getEndpoint();
     bot = getBot();
-
+    $('#input_field').hide();
+    $('#submit').hide();
     //Request response of init node
     init();
 });
@@ -34,7 +35,7 @@ function init() {
             context = data["context"];
             session = data["session"];
             //show Alquist's response
-            showSystemMessages(data["messages"]);
+            showSystemMessages(data["messages"], data["input"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -96,7 +97,7 @@ function sendInput(text) {
             context = data["context"];
             session = data["session"];
             //show Alquist's response
-            showSystemMessages(data["messages"]);
+            showSystemMessages(data["messages"], data["input"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -105,7 +106,7 @@ function sendInput(text) {
 }
 
 //Shows responses of Alquist
-function showSystemMessages(messages) {
+function showSystemMessages(messages, input) {
     var buttons = [];
     var checkboxes = [];
     // absolute delay of showing the messages
@@ -132,9 +133,29 @@ function showSystemMessages(messages) {
             showIframe(messages[i]['payload']['url'], messages[i]['payload']['width'], messages[i]['payload']['height'], messages[i]['payload']['scrolling'], messages[i]['payload']['align'], cumulatedDelay);
         }
     }
+    // if there is some delay, than hide input
+    if (cumulatedDelay > 0) {
+        hideSubmitButon();
+        hideInput();
+    }
+    // Show inputs after delay
     setTimeout(function () {
         showButtons(buttons);
-        showCheckboxes(checkboxes)
+        showCheckboxes(checkboxes);
+        switch (input) {
+            case "input":
+                showInput();
+                showSubmitButton(false);
+                break;
+            case "button":
+                hideInput();
+                showSubmitButton(true);
+                break;
+            case "none":
+                hideSubmitButon();
+                hideInput();
+                break;
+        }
     }, cumulatedDelay);
 }
 
@@ -275,14 +296,33 @@ function hideCheckboxes() {
 
 //show input form
 function showInput() {
-    $('#form').show(showHideTime);
+    $('#input_field').show(showHideTime);
+    $('#submit').show(showHideTime);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+}
+
+function showSubmitButton(rounded) {
+    $('#submit').show(showHideTime);
+    $('#submit_span').css("text-align", "right");
+    if (rounded) {
+        $('#submit').css("border-top-left-radius", "4px");
+        $('#submit').css("border-bottom-left-radius", "4px");
+    }else{
+        $('#submit').css("border-top-left-radius", "0px");
+        $('#submit').css("border-bottom-left-radius", "0px");
+    }
     //scroll to bottom of page
     $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
 //hide input form
 function hideInput() {
-    $('#form').hide(showHideTime);
+    $('#input_field').hide(showHideTime);
+}
+
+function hideSubmitButon() {
+    $('#submit').hide(showHideTime);
 }
 
 //hack to have same size of input field and submit button
