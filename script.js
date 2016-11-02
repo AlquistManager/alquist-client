@@ -8,6 +8,8 @@ var scrollToBottomTime = 500;
 
 //Function called right after the page is loaded
 $(document).ready(function () {
+    //input field size hack
+    inputFieldSizeHack();
     //Get endpoint from URL address
     endpoint = getEndpoint();
     bot = getBot();
@@ -281,4 +283,11 @@ function showInput() {
 //hide input form
 function hideInput() {
     $('#form').hide(showHideTime);
+}
+
+//hack to have same size of input field and submit button
+function inputFieldSizeHack() {
+    var height = $('#submit_span').outerHeight();
+    $('#submit').outerHeight(height);
+    $('#input_field').outerHeight(height)
 }
