@@ -132,6 +132,9 @@ function showSystemMessages(messages, input) {
             cumulatedDelay += messages[i]['delay'];
             showIframe(messages[i]['payload']['url'], messages[i]['payload']['width'], messages[i]['payload']['height'], messages[i]['payload']['scrolling'], messages[i]['payload']['align'], cumulatedDelay);
         }
+        else if (messages[i]['type'] == "carousel"){
+            showCarousel(messages[i]['payload']['parts'], cumulatedDelay);
+        }
     }
     // if there is some delay, than hide input
     if (cumulatedDelay > 0) {
@@ -259,6 +262,21 @@ function showIframe(url, width, height, scrolling, align, delay) {
     }, delay);
 }
 
+function showCarousel(parts) {
+    // escape html tags
+    parts = parts.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    //Show it on page
+    var carousell=$('<div class="multiple-items"> </div>');
+    var well = $('<div class="well" style="margin-bottom: 20px;"><div class="clearfix"></div></div>').append(carousell);
+    $("#communication_area").append(well);
+    for (var part in parts){
+        carousell.append("<div>"+part+"</div>");
+    }
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+    slick();
+}
+
 // callback function for button click
 function createButtonClickCallback(text, next_state) {
     return function () {
@@ -308,7 +326,7 @@ function showSubmitButton(rounded) {
     if (rounded) {
         $('#submit').css("border-top-left-radius", "4px");
         $('#submit').css("border-bottom-left-radius", "4px");
-    }else{
+    } else {
         $('#submit').css("border-top-left-radius", "0px");
         $('#submit').css("border-bottom-left-radius", "0px");
     }
@@ -330,4 +348,13 @@ function inputFieldSizeHack() {
     var height = $('#submit_span').outerHeight();
     $('#submit').outerHeight(height);
     $('#input_field').outerHeight(height)
+}
+
+function slick() {
+    $('.multiple-items').slick({
+    slidesToShow: 3,
+    slidesToScroll: 3,
+    dots: true,
+    arrows:false
+    });
 }
