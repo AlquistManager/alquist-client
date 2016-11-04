@@ -140,7 +140,7 @@ function showSystemMessages(messages) {
 
 // Show text message
 function showSystemMessageText(text, delay) {
-    var well = $('<table class="message"><tr><td><img src="img/Alquist.png" class="profile_picture_left"></td><td><div class="arrow-left"></div></td><td><div class="well well_system"><div class="clearfix"><b>Alquist:</b><span> ' + text + '</span></div></div></td><td class="empty_space"></td></tr></table>');
+    var well = $('<table class="message"><tr><td><img src="img/Alquist.png" class="profile_picture_left"></td><td><div class="arrow-left"></div></td><td><div class="well well_system"><div class="clearfix"><span> ' + text + '</span></div></div></td><td class="empty_space"></td></tr></table>');
     setTimeout(function () {
         $("#communication_area").append(well.fadeIn("medium"));
         //scroll to bottom of page
@@ -155,7 +155,7 @@ function showUserMessage(text) {
     // escape html tags
     text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     //Show it on page
-    var well = $('<table class="message message_user"><tr><td class="empty_space"></td><td><div class="well"><div class="clearfix"><b>User:</b><span> ' + text + '</span></div></div></td><td><div class="arrow-right"></div></td><td><img src="img/User.png" class="profile_picture_right"></td></tr></table>');
+    var well = $('<table class="message message_user"><tr><td class="empty_space"></td><td><div class="well"><div class="clearfix"><span> ' + text + '</span></div></div></td><td><div class="arrow-right"></div></td><td><img src="img/User.png" class="profile_picture_right"></td></tr></table>');
     $("#communication_area").append(well);
     //scroll to bottom of page
     $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
