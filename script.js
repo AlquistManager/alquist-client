@@ -2,6 +2,7 @@ var endpoint;
 var bot;
 var state = 'init';
 var context = {};
+var payload = {};
 var session = "";
 var showHideTime = 500;
 var scrollToBottomTime = 500;
@@ -25,7 +26,14 @@ function init() {
         url: endpoint,
         type: 'post',
         processData: false,
-        data: JSON.stringify({"text": '', "bot": bot, "state": state, "context": context, "session": session}),
+        data: JSON.stringify({
+            "text": '',
+            "bot": bot,
+            "state": state,
+            "context": context,
+            "session": session,
+            "payload": payload
+        }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
 
@@ -34,6 +42,7 @@ function init() {
             state = data["state"];
             context = data["context"];
             session = data["session"];
+            payload = {};
             //show Alquist's response
             showSystemMessages(data["messages"], data["input"]);
         },
@@ -55,7 +64,9 @@ $(document).on("submit", "#form", function (e) {
     //Erase input field
     $('#input_field').val("");
     //Show user's input immediately
-    showUserMessage(text);
+    if (text != "") {
+        showUserMessage(text);
+    }
 });
 
 //Click on reset button
@@ -93,7 +104,14 @@ function sendInput(text) {
         dataType: 'json',
         type: 'post',
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify({"text": text, "bot": bot, "state": state, "context": context, "session": session}),
+        data: JSON.stringify({
+            "text": text,
+            "bot": bot,
+            "state": state,
+            "context": context,
+            "session": session,
+            "payload": payload
+        }),
         processData: false,
 
         success: function (data, textStatus, jQxhr) {
@@ -101,6 +119,7 @@ function sendInput(text) {
             state = data["state"];
             context = data["context"];
             session = data["session"];
+            payload = {};
             //show Alquist's response
             showSystemMessages(data["messages"], data["input"]);
         },
@@ -304,12 +323,12 @@ function createButtonClickCallback(text, next_state) {
 function createCheckboxClickCallback(checkboxElement, update_keys) {
     return function () {
         if (checkboxElement.checked) {
-            jQuery.extend(context, update_keys);
+            jQuery.extend(payload, update_keys);
         } else {
             for (var k in update_keys) {
                 // skip loop if the property is from prototype
                 if (!update_keys.hasOwnProperty(k)) continue;
-                delete context[k];
+                delete payload[k];
             }
         }
     }
