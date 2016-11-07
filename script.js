@@ -166,6 +166,11 @@ function showSystemMessages(messages, input) {
             case "both":
                 showInput();
                 showSubmitButton(false);
+                break;
+            default:
+                showInput();
+                showSubmitButton(false);
+                break;
         }
     }, cumulatedDelay);
 }
