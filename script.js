@@ -13,7 +13,8 @@ $(document).ready(function () {
     //Get endpoint from URL address
     endpoint = getEndpoint();
     bot = getBot();
-
+    $('#input_field').hide();
+    $('#submit').hide();
     //Request response of init node
     init();
 });
@@ -34,7 +35,7 @@ function init() {
             context = data["context"];
             session = data["session"];
             //show Alquist's response
-            showSystemMessages(data["messages"]);
+            showSystemMessages(data["messages"], data["input"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -76,6 +77,11 @@ $(document).on("click", "#back", function (e) {
 
 });
 
+//Click on back button
+$("iframe").on("click", function (e) {
+    e.preventDefault();
+});
+
 //send message to Alquist by REST
 function sendInput(text) {
     // escape html tags
@@ -96,7 +102,7 @@ function sendInput(text) {
             context = data["context"];
             session = data["session"];
             //show Alquist's response
-            showSystemMessages(data["messages"]);
+            showSystemMessages(data["messages"], data["input"]);
         },
         error: function (jqXhr, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -105,7 +111,7 @@ function sendInput(text) {
 }
 
 //Shows responses of Alquist
-function showSystemMessages(messages) {
+function showSystemMessages(messages, input) {
     var buttons = [];
     var checkboxes = [];
     // absolute delay of showing the messages
@@ -131,10 +137,33 @@ function showSystemMessages(messages) {
             cumulatedDelay += messages[i]['delay'];
             showIframe(messages[i]['payload']['url'], messages[i]['payload']['width'], messages[i]['payload']['height'], messages[i]['payload']['scrolling'], messages[i]['payload']['align'], cumulatedDelay);
         }
+        else if (messages[i]['type'] == "carousel") {
+            showCarousel(messages[i]['payload']['parts'], messages[i]['payload']['urls'], cumulatedDelay);
+        }
     }
+    // if there is some delay, than hide input
+    if (cumulatedDelay > 0) {
+        hideSubmitButon();
+        hideInput();
+    }
+    // Show inputs after delay
     setTimeout(function () {
         showButtons(buttons);
-        showCheckboxes(checkboxes)
+        showCheckboxes(checkboxes);
+        switch (input) {
+            case "input":
+                showInput();
+                showSubmitButton(false);
+                break;
+            case "button":
+                hideInput();
+                showSubmitButton(true);
+                break;
+            case "none":
+                hideSubmitButon();
+                hideInput();
+                break;
+        }
     }, cumulatedDelay);
 }
 
@@ -238,6 +267,21 @@ function showIframe(url, width, height, scrolling, align, delay) {
     }, delay);
 }
 
+function showCarousel(parts, urls, delay) {
+    //Show it on page
+    setTimeout(function () {
+        var carousell = $('<div class="multiple-items" style="height:600px"> </div>');
+        var well = $('<div class="well" style="margin-bottom: 20px;"><div class="clearfix"></div></div>').append(carousell);
+        $("#carousel").append(well);
+        for (var i = 0; i < parts.length; i++) {
+            carousell.append("<a style='height:600px' href='" + urls[i] + "'>" + parts[i] + "</a>");
+        }
+        //scroll to bottom of page
+        $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+        slick();
+    }, delay);
+}
+
 // callback function for button click
 function createButtonClickCallback(text, next_state) {
     return function () {
@@ -275,14 +319,33 @@ function hideCheckboxes() {
 
 //show input form
 function showInput() {
-    $('#form').show(showHideTime);
+    $('#input_field').show(showHideTime);
+    $('#submit').show(showHideTime);
+    //scroll to bottom of page
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+}
+
+function showSubmitButton(rounded) {
+    $('#submit').show(showHideTime);
+    $('#submit_span').css("text-align", "right");
+    if (rounded) {
+        $('#submit').css("border-top-left-radius", "4px");
+        $('#submit').css("border-bottom-left-radius", "4px");
+    } else {
+        $('#submit').css("border-top-left-radius", "0px");
+        $('#submit').css("border-bottom-left-radius", "0px");
+    }
     //scroll to bottom of page
     $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
 //hide input form
 function hideInput() {
-    $('#form').hide(showHideTime);
+    $('#input_field').hide(showHideTime);
+}
+
+function hideSubmitButon() {
+    $('#submit').hide(showHideTime);
 }
 
 //hack to have same size of input field and submit button
@@ -290,4 +353,29 @@ function inputFieldSizeHack() {
     var height = $('#submit_span').outerHeight();
     $('#submit').outerHeight(height);
     $('#input_field').outerHeight(height)
+}
+
+function slick() {
+    $('.multiple-items').slick({
+        slidesToShow: 3,
+        slidesToScroll: 3,
+        dots: true,
+        arrows: false,
+        infinite: false,
+        responsive: [
+            {
+                breakpoint: 1200,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }]
+    });
 }
