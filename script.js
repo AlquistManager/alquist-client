@@ -99,6 +99,7 @@ function sendInput(text) {
     text = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     hideButtons();
     hideCheckboxes();
+    hideSlider();
     $.ajax({
         url: endpoint,
         dataType: 'json',
@@ -158,6 +159,8 @@ function showSystemMessages(messages, input) {
         }
         else if (messages[i]['type'] == "carousel") {
             showCarousel(messages[i]['payload']['parts'], messages[i]['payload']['urls'], cumulatedDelay);
+        }else if (messages[i]['type'] == "slider") {
+            showSlider(messages[i]['payload'], cumulatedDelay);
         }
     }
     // if there is some delay, than hide input
@@ -283,6 +286,33 @@ function showCheckboxes(checkboxes) {
     $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
+function showSlider(slider,delay){
+    var sliders = $("#sliders");
+    sliders.empty();
+    sliders.html("<div id='slider'></div>");
+
+    var sliderElement = document.getElementById('slider');
+
+    noUiSlider.create(sliderElement, {
+        start: [5000, 10000],
+        connect: true,
+        range: {
+            'min': 0,
+            'max': 30000
+        },
+        step: 100,
+        tooltips: true,
+        format: wNumb({
+            decimals: 0,
+            postfix: 'Kč'
+        }),
+        margin: 100
+    });
+
+    //alert(sliderElement.noUiSlider.get());
+    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+}
+
 function showIframe(url, width, height, scrolling, align, delay) {
     var well = $('<table class="message"><tr><td><img src="img/Alquist.png" class="profile_picture_left"></td><td><div class="arrow-left"></div></td><td style="width: 100%"><div class="well well_system"><div class="clearfix"><table style="width:100%"><tr><td><b>Alquist:</b></td><td style="width: 100%; text-align: ' + align + ';"><iframe src=' + url + ' style="height: ' + height + 'px; width: ' + width + '%;"class="message_iframe" scrolling="' + scrolling + '"></iframe></td></tr></table></div></div></td><td class="empty_space" style="float: right;"></td></tr></table>');
     setTimeout(function () {
@@ -334,9 +364,24 @@ function createCheckboxClickCallback(checkboxElement, update_keys) {
     }
 }
 
+function sendSiderValues(min_value_key, max_value_key){
+    var content={}
+    var obj_one = {};
+    var obj_two = {};
+    obj_one[min_value_key] = slider.noUiSlider.get()[0];
+    obj_two[max_value_key] = slider.noUiSlider.get()[1];
+    content.push(obj_one);
+    content.push(obj_two);
+    jQuery.extend(payload, content);
+}
+
 //hide buttons smoothly
 function hideButtons() {
     $('#buttons').hide(showHideTime);
+}
+
+function hideSlider(){
+    $('#sliders').hide(showHideTime);
 }
 
 //hide checkboxes smoothly
