@@ -6,6 +6,7 @@ var payload = {};
 var session = "";
 var showHideTime = 500;
 var scrollToBottomTime = 500;
+var sliderInfo = {};
 
 //Function called right after the page is loaded
 $(document).ready(function () {
@@ -100,6 +101,7 @@ function sendInput(text) {
     hideButtons();
     hideCheckboxes();
     hideSlider();
+    sendSliderValues();
     $.ajax({
         url: endpoint,
         dataType: 'json',
@@ -159,7 +161,7 @@ function showSystemMessages(messages, input) {
         }
         else if (messages[i]['type'] == "carousel") {
             showCarousel(messages[i]['payload']['parts'], messages[i]['payload']['urls'], cumulatedDelay);
-        }else if (messages[i]['type'] == "slider") {
+        } else if (messages[i]['type'] == "slider") {
             showSlider(messages[i]['payload'], cumulatedDelay);
         }
     }
@@ -286,31 +288,33 @@ function showCheckboxes(checkboxes) {
     $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
 }
 
-function showSlider(slider,delay){
-    var sliders = $("#sliders");
-    sliders.empty();
-    sliders.html("<div id='slider'></div>");
+function showSlider(slider, cumulatedDelay) {
+    setTimeout(function () {
+        var sliders = $("#sliders");
+        sliders.empty();
+        sliders.html("<div id='slider'></div>");
+        sliderInfo["entities"] = slider["entities"];
+        var sliderElement = document.getElementById('slider');
 
-    var sliderElement = document.getElementById('slider');
-
-    noUiSlider.create(sliderElement, {
-        start: [5000, 10000],
-        connect: true,
-        range: {
-            'min': 0,
-            'max': 30000
-        },
-        step: 100,
-        tooltips: true,
-        format: wNumb({
-            decimals: 0,
-            postfix: 'Kč'
-        }),
-        margin: 100
-    });
-
-    //alert(sliderElement.noUiSlider.get());
-    $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+        noUiSlider.create(sliderElement, {
+            start: slider["default_values"],
+            connect: slider["connect"],
+            range: {
+                'min': slider['min_value'],
+                'max': slider['max_value']
+            },
+            step: slider['step'],
+            tooltips: slider['tooltips'],
+            format: wNumb({
+                decimals: slider['tooltips_decimals'],
+                prefix: slider['tooltips_prefix'],
+                postfix: slider['tooltips_postfix']
+            })
+        });
+        $("#sliders").show(showHideTime);
+        //alert(sliderElement.noUiSlider.get());
+        $("html, body").animate({scrollTop: $(document).height()}, scrollToBottomTime);
+    }, cumulatedDelay);
 }
 
 function showIframe(url, width, height, scrolling, align, delay) {
@@ -364,15 +368,14 @@ function createCheckboxClickCallback(checkboxElement, update_keys) {
     }
 }
 
-function sendSiderValues(min_value_key, max_value_key){
-    var content={}
-    var obj_one = {};
-    var obj_two = {};
-    obj_one[min_value_key] = slider.noUiSlider.get()[0];
-    obj_two[max_value_key] = slider.noUiSlider.get()[1];
-    content.push(obj_one);
-    content.push(obj_two);
-    jQuery.extend(payload, content);
+function sendSliderValues() {
+    if (sliderInfo["entities"].length == 1) {
+        payload[sliderInfo["entities"][0]] = parseInt(slider.noUiSlider.get());
+    } else {
+        for (var i = 0; i < sliderInfo["entities"].length; i++) {
+            payload[sliderInfo["entities"][i]] = parseInt(slider.noUiSlider.get()[i]);
+        }
+    }
 }
 
 //hide buttons smoothly
@@ -380,7 +383,7 @@ function hideButtons() {
     $('#buttons').hide(showHideTime);
 }
 
-function hideSlider(){
+function hideSlider() {
     $('#sliders').hide(showHideTime);
 }
 
