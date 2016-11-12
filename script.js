@@ -369,7 +369,7 @@ function createCheckboxClickCallback(checkboxElement, update_keys) {
 }
 
 function sendSliderValues() {
-    if ("entities" in sliderInfo) {
+    if ("entities" in sliderInfo ) {
         if (sliderInfo["entities"].length == 1) {
             payload[sliderInfo["entities"][0]] = parseInt(slider.noUiSlider.get());
         } else {
